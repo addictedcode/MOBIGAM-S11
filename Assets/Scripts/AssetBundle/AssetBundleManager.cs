@@ -73,4 +73,19 @@ public class AssetBundleManager : MonoBehaviour
         }
         return ret;
     }
+
+    public T[] GetAllAsset<T>(string bundleName) where T : Object
+    {
+        T[] ret = null;
+        AssetBundle bundle = LoadBundle(bundleName);
+        if (bundle != null)
+        {
+            ret = bundle.LoadAllAssets<T>();
+        }
+        else
+        {
+            Debug.LogError($"{bundleName} does not exist!");
+        }
+        return ret;
+    }
 }

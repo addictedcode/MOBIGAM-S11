@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     public Transform stagePanel;
-    private StageData[] stageData = new StageData[3];
+    private StageData[] stageData;
     public GameObject pbButton;
     [SerializeField] private PlayerStats playerStats;
 
@@ -15,9 +15,7 @@ public class MainMenu : MonoBehaviour
     {
         AdsManager.instance.OnAdDone += OnAdFinish;
         AssetBundleManager.instance.LoadBundle("bosses");
-        stageData[0] = AssetBundleManager.instance.GetAsset<StageData>("stage", "Stage1");
-        stageData[1] = AssetBundleManager.instance.GetAsset<StageData>("stage", "Stage2");
-        stageData[2] = AssetBundleManager.instance.GetAsset<StageData>("stage", "Stage3");
+        stageData = AssetBundleManager.instance.GetAllAsset<StageData>("stage");
         LoadStages();
     }
 
