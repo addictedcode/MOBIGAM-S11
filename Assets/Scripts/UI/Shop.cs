@@ -15,8 +15,14 @@ public class Shop : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AdsManager.instance.OnAdDone += OnAdFinish;
         UpdateMoneyText();
         UpdateButtons();
+    }
+
+    private void OnDisable()
+    {
+        AdsManager.instance.OnAdDone -= OnAdFinish;
     }
 
     public void OnUpgrade(int index)
@@ -71,6 +77,27 @@ public class Shop : MonoBehaviour
             {
                 upgradePanel[i].GetChild(0).GetComponent<Button>().interactable = false;
                 upgradePanel[i].GetChild(1).GetComponent<Text>().text = "-";
+            }
+        }
+    }
+
+    private void OnAdFinish(object sender, AdFinishEventArgs e)
+    {
+        if (e.PlacementID == AdsManager.rewardVideoAdID)
+        {
+            switch (e.AdShowResult)
+            {
+                case UnityEngine.Advertisements.ShowResult.Failed:
+                    Debug.Log("Ad failed");
+                    break;
+                case UnityEngine.Advertisements.ShowResult.Skipped:
+                    Debug.Log("Ad skipped");
+                    break;
+                case UnityEngine.Advertisements.ShowResult.Finished:
+                    Debug.Log("Ad finished properly");
+                    playerStats.money += 500;
+                    UpdateMoneyText();
+                    break;
             }
         }
     }

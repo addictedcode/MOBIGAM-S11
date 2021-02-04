@@ -52,4 +52,9 @@ public class ApplicationManager: MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene(0);
     }
+
+    public void OnScreenshotAndUpload()
+    {
+        FBManager.instance.UploadScreenshot();
+    }
 }

@@ -14,4 +14,5 @@ public class PlayerStats : ScriptableObject
 
     public int[] numTimesUpgrade = {0};
 
+    public int latestStageIndex = 0;
 }

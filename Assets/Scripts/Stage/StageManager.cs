@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Notifications.Android;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,11 +31,11 @@ public class StageManager : MonoBehaviour
     public RectTransform playableArea;
     public float padding = 0.0f;
     public Transform enemyHolder;
-    public GameObject baseEnemyObject;
+    private GameObject baseEnemyObject;
 
-    public EnemyData[] enemyData;
+    private EnemyData[] enemyData = new EnemyData[3];
 
-    public StageData stageData;
+    private StageData stageData;
 
     private Queue<EnemySpawnData> enemiesToSpawn;
     private float timeElapsed = 0.0f;
@@ -56,8 +57,19 @@ public class StageManager : MonoBehaviour
             stageData = StageParameter.stageToLoad;
         }
         StartCoroutine(LoadingScreen());
+        LoadBundles();
         LoadStageData();
         StartCoroutine(CheckIfBossCanSpawn());
+    }
+
+    private void LoadBundles()
+    {
+        AssetBundleManager.instance.LoadBundle("textures");
+        AssetBundleManager.instance.LoadBundle("effects");
+        baseEnemyObject = AssetBundleManager.instance.GetAsset<GameObject>("enemies", "Enemy");
+        enemyData[0] = AssetBundleManager.instance.GetAsset<EnemyData>("enemies", "Asteroid");
+        enemyData[1] = AssetBundleManager.instance.GetAsset<EnemyData>("enemies", "Ship");
+        enemyData[2] = AssetBundleManager.instance.GetAsset<EnemyData>("enemies", "Projectile");
     }
 
     // Update is called once per frame
@@ -103,6 +115,7 @@ public class StageManager : MonoBehaviour
 
     public void DisplayEndPanel(bool isDead)
     {
+        MusicManager.instance.PlayMusic(0);
         ApplicationManager.instance.GameFinish();
         if (isDead)
         {
@@ -111,6 +124,11 @@ public class StageManager : MonoBehaviour
         else
         {
             stageEndPanel.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "You Win";
+            SendWinNotification();
+            if (Player.instance.stats.latestStageIndex < stageData.stageIndex)
+            {
+                Player.instance.stats.latestStageIndex = stageData.stageIndex;
+            }
         }
 
         stageEndPanel.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = Player.instance.score.ToString("000000000");
@@ -154,12 +172,11 @@ public class StageManager : MonoBehaviour
     {
         if (enemyHolder.childCount <= 0)
         {
-            MusicManager.instance.PlayMusic(0);
-            StageManager.instance.DisplayEndPanel(false);
+            DisplayEndPanel(false);
         }
     }
 
-    private void SpawnEnemy(EnemyType type)
+    public void SpawnEnemy(EnemyType type)
     {
         Quaternion rotation = Random.rotation;
         rotation.eulerAngles = new Vector3(0, 0, rotation.eulerAngles.z);
@@ -178,5 +195,17 @@ public class StageManager : MonoBehaviour
         Vector3 spawnPoint = new Vector3(x, y, z);
 
         return spawnPoint;
+    }
+
+    private void SendWinNotification()
+    {
+        string title = "Space Guy Shooting";
+        string text = "Congrats! You have defeated the " + stageData.bossName + "!";
+        System.DateTime fireTime = System.DateTime.Now.AddSeconds(3);
+        AndroidNotification notif = new AndroidNotification(title, text, fireTime);
+
+        notif.LargeIcon = "spaceguy";
+
+        AndroidNotificationCenter.SendNotification(notif, "default");
     }
 }

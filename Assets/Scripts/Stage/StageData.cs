@@ -12,5 +12,6 @@ public class StageData : ScriptableObject
     public float[] enemySpawnTime;
 
     public GameObject pbBoss;
+    public string bossName;
     public string bossAnnouncement;
 }

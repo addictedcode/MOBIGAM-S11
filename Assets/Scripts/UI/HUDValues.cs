@@ -26,6 +26,7 @@ public class HUDValues : MonoBehaviour
     public Text bombs;
     public Text money;
     public Transform weaponPanel;
+    [SerializeField] private Transform weaponDisplayPanel;
 
     // Start is called before the first frame update
     void Start()
@@ -60,17 +61,42 @@ public class HUDValues : MonoBehaviour
     public void UpdateWeapon(int index)
     {
         Player.instance.currentWeaponType = (EnemyType)index;
+        StopAllCoroutines();
         for (int i = 0; i < weaponPanel.childCount; i++)
         {
             if (i == index)
             {
                 weaponPanel.GetChild(i).GetComponent<Button>().interactable = false;
+                StartCoroutine(FadeGameObject(weaponDisplayPanel.GetChild(i).gameObject));
             }
             else
             {
                 weaponPanel.GetChild(i).GetComponent<Button>().interactable = true;
+                weaponDisplayPanel.GetChild(i).gameObject.SetActive(false);
             }
         }
+    }
+
+    private IEnumerator FadeGameObject(GameObject obj)
+    {
+        obj.SetActive(true);
+        Image img = obj.GetComponent<Image>();
+
+        img.color = new Color(1, 1, 1, 0.66f);
+
+        yield return new WaitForSeconds(0.3f);
+
+        Color transparent = new Color(1, 1, 1, 0);
+
+        WaitForSeconds delay = new WaitForSeconds(0.1f);
+
+        for (int i = 0; i < 5; ++i)
+        {
+            img.color = Color.Lerp(img.color, transparent, 0.5f);
+            yield return delay;
+        }
+
+        obj.SetActive(false);
     }
 }
 

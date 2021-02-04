@@ -21,7 +21,7 @@ public class MusicManager : MonoBehaviour
     #endregion
 
     private AudioSource source;
-    [SerializeField] private AudioClip[] musicClips;
+    private List<AudioClip> musicClips = new List<AudioClip>();
 
     [SerializeField] private OptionsValues options;
 
@@ -31,7 +31,15 @@ public class MusicManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         source = GetComponent<AudioSource>();
         UpdateVolume();
+        LoadMusic();
         PlayMusic(0);
+    }
+
+    private void LoadMusic()
+    {
+        musicClips.Add(AssetBundleManager.instance.GetAsset<AudioClip>("audio", "space_walk"));
+        musicClips.Add(AssetBundleManager.instance.GetAsset<AudioClip>("audio", "Hero Immortal"));
+        musicClips.Add(AssetBundleManager.instance.GetAsset<AudioClip>("audio", "Orbital Colossus"));
     }
 
     public void PlayMusic(int index)

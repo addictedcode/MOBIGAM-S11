@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     public int bombs = 1;
 
     public Transform enemyHolder;
-    [SerializeField] private GameObject pbExplosion;
+    private GameObject pbExplosion;
 
     [SerializeField] private GameObject redPanel;
 
@@ -38,6 +38,8 @@ public class Player : MonoBehaviour
         GestureManager.instance.OnSwipe += OnSwipe;
         GestureManager.instance.OnPinchSpread += OnPinch;
         hp = stats.maxHp;
+        AssetBundleManager.instance.LoadBundle("effects");
+        pbExplosion = AssetBundleManager.instance.GetAsset<GameObject>("effects", "ExplosionEffect");
     }
 
     private void OnDisable()

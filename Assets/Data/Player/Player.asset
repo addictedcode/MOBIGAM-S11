@@ -15,5 +15,6 @@ MonoBehaviour:
   maxHp: 3
   money: 0
   weaponDamage: 010000000100000001000000
-  cameraSpeed: 1
+  cameraSpeed: 2
   numTimesUpgrade: 0000000000000000000000000000000000000000
+  latestStageIndex: 0
