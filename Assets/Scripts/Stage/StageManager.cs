@@ -125,9 +125,9 @@ public class StageManager : MonoBehaviour
         {
             stageEndPanel.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = "You Win";
             SendWinNotification();
-            if (Player.instance.stats.latestStageIndex < stageData.stageIndex)
+            if (Player.instance.stats.latestStageIndex <= stageData.stageIndex)
             {
-                Player.instance.stats.latestStageIndex = stageData.stageIndex;
+                Player.instance.stats.latestStageIndex = stageData.stageIndex + 1;
             }
         }
 
